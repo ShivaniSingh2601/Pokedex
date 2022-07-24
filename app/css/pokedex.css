@@ -1,0 +1,19 @@
+.header-text {
+    color: rebeccapurple;
+    text-align: center;
+    font-size: 18px;
+}
+.list-style-none {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.card-image {
+    height: 200px;
+    width: 100%;
+}
+.card-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
