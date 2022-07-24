@@ -17,3 +17,10 @@
     width: 100%;
     object-fit: contain;
 }
+.detail-modal .modal-header h5 {
+    font-size: 16px;
+    color: darkblue;
+}
+.detail-modal .modal-body {
+    padding: 20px;
+}

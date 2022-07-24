@@ -26,6 +26,8 @@ export function PokedexApp() {
     const [pokeData, setPokeData] = useState([]);
     const [offsetValue, setOffsetValue] = useState(0);
     const [limitValue, setLimitValue] = useState(20);
+    const [openModal, setOpenModal] = useState(false);
+    const [onePokemonData, setOnePokemonData] = useState();
 
     useEffect(() => {
         if (pokeData) {
@@ -33,6 +35,11 @@ export function PokedexApp() {
             fetchApi();
         }
     }, [offsetValue, limitValue]);
+
+
+    useEffect(() => {
+        console.log("onePokemonData", onePokemonData);
+    }, [onePokemonData]);
 
     const fetchApi = () => {
         fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limitValue}&offset=${offsetValue}`)
@@ -42,6 +49,16 @@ export function PokedexApp() {
             .then(data => {
                 setPokeData(data.results)
             })
+    }
+
+    const fetchPokeData = (id) => {
+        setOpenModal(true);
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+            .then(res => res.json())
+            .then(data => {
+                setOnePokemonData(data.stats);
+            })
+            .catch(err => console.log(err));
     }
 
     const pageChangeHandler = (action) => {
@@ -83,8 +100,7 @@ export function PokedexApp() {
                             <div className="card-body">
                                 <h5 className="card-title text-warning text-capitalize">{item.name}</h5>
                                 <h6 className="text-info">ID: {index + 1}</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                <a href="#" className="btn btn-warning">View More</a>
+                                <a className="btn btn-warning" onClick={() => fetchPokeData(index + 1)}>View More</a>
                             </div>
                         </div>
                     </li>
@@ -97,6 +113,31 @@ export function PokedexApp() {
                     <button type="button" className="btn btn-dark" onClick={() => pageChangeHandler("next")}>Next &rarr;</button>
                 </div>
             </div>
+
+            {openModal &&
+                <div className="modal d-block animate__animated animate__slideInDown" tabIndex="-1">
+                    <div className="modal-dialog">
+                        <div className="modal-content detail-modal">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Pokemon Details</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setOpenModal(false)}></button>
+                            </div>
+                            <div className="modal-body row">
+                                {onePokemonData && onePokemonData.map((data) => <ul className="col-md-6 my-1 card py-1 px-1 list-style-none">
+                                    <li><p className="">Base Stat: {data.base_stat}</p></li>
+                                    <li><p className="">Effort: {data.effort}</p></li>
+                                    <li><p className="">Stat Name: {data.stat.name}</p></li>
+                                </ul>
+                                )
+                                }
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={() => setOpenModal(false)}>Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </React.Fragment>
     );
 }
